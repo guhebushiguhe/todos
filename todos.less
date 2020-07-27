@@ -1,0 +1,283 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+ul{
+    list-style: none;
+}
+html{
+    overflow: hidden;
+}
+body{
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    // background: rgb(224, 224, 224);
+    background-image: linear-gradient( 180deg, rgb(245, 237, 225), rgb(214, 179, 195));
+}
+.hidden{
+    display: none;
+}
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/  
+::-webkit-scrollbar  
+{  
+    width: 4px;  /*滚动条宽度*/
+    height: 16px;  /*滚动条高度*/
+}  
+  
+/*定义滚动条轨道 内阴影+圆角*/  
+::-webkit-scrollbar-track  
+{  
+    // -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);  
+    border-radius: 10px;  /*滚动条的背景区域的圆角*/
+    background-color: rgba(235, 235, 235,0\.5);/*滚动条的背景颜色*/  
+}  
+  
+/*定义滑块 内阴影+圆角*/  
+::-webkit-scrollbar-thumb  
+{  
+    border-radius: 10px;  /*滚动条的圆角*/
+    // -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);  
+    background-color: rgb(211, 163, 181);  /*滚动条的背景颜色*/
+} 
+
+#app {
+    width: 600px;
+    height: 400px;
+    margin: 40px auto;
+    color: #333;
+    font-weight: 100;
+    header{
+        #todo-title{
+            // width: 240px;
+            width: 220px;
+            // border: 1px solid #000;
+            margin: 0 auto;
+            font-size: 60px;
+            color: rgb(182, 26, 86);
+        }
+        .taskBox{
+            height: 42px;
+            #task {
+                display: block;
+                float: left;
+                width: 485px;
+                height: 40px;
+                outline: none;
+                border-radius: 10px;
+                border: 1px solid rgb(182, 26, 86);
+                text-indent: 1em;
+            }
+          
+            #addBtn {
+                float: left;
+                margin-left: 12px;
+                width: 100px;
+                height: 40px;
+                font-size: 18px;
+                font-weight: 100;
+                border-radius: 10px;
+                border: 1px solid rgb(182, 26, 86);
+                color: rgb(182, 26, 86);
+                cursor: pointer;
+                outline: none;
+                background-color:rgb(255, 255, 255);
+                transition: color .1s,background-color .1s;
+            }
+            #addBtn:hover{
+                color: #fff;
+                background: rgb(182, 26, 86);
+            }
+        }
+    }
+  
+    .todo{
+        border-radius: 10px;
+        box-shadow: 10px 20px 60px rgba(1,1,1,.2),
+        1px 5px 10px rgba(221, 166, 166, 0.5);
+        ul {
+            width: 580px;
+            height: auto;
+            min-height: 240px;
+            max-height: 500px;
+            overflow-x: hidden;
+            font-size: 20px;
+            border-radius: 10px 10px 0 0;
+            padding: 0 10px;
+            margin-top: 10px;
+            margin-bottom: 3px;
+            background: rgba(255,255,255,.3);
+            position: relative;;
+            li{
+                // background: rgb(216, 216, 216);
+                border: 1px solid rgb(179, 178, 178);
+                border-width: 0 0 1px 0;
+                margin: 10px 0 5px 0;
+                width: 575px;
+                height: 38px;
+                line-height: 38px;
+                position: relative;
+                box-sizing: border-box;
+                padding: 0 10px;
+                border-radius: 6px;
+                box-shadow: 0px 1px 4px rgba(107, 46, 82, 0);
+                transform: translateY(0px);
+                background-color: rgba(255,255,255,0);
+                transition: border-color .1s,border-shadow .1s,transform .1s,background-color .1s;
+                .check{
+                    display: inline-block;
+                    width: 14px;
+                    height: 14px;
+                    border: 1px solid #333;
+                    border-radius: 50%;
+                    position: relative;
+                    cursor: pointer;
+                }
+                .check:before{
+                    content: '';
+                    width: 10px;
+                    height: 10px;
+                    background: rgb(190, 92, 92);
+                    border-radius: 50%;
+                    position: relative;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%,-50%);
+                    display: none;
+                    // display: block;
+                }
+                .check.show:before{
+                    display: block;
+                }
+                input{
+                    width: 300px;
+                    height: 30px;
+                    font-size: 18px;
+                    color: #333;
+                    text-indent: 0.5em;
+                    border: 1px solid rgb(182, 26, 86);
+                    border-radius: 10px;
+                    outline: none;
+                    display: none;
+                }
+                input.active{
+                    display: inline-block;
+                }
+                button{
+                    float: right;
+                    font-size: 20px;
+                    width: 40px;
+                    height: 30px;
+                    border-width: 0px;
+                    margin-top: 4px;
+                    color: rgb(182, 26, 86);
+                    background: rgba(1,1,1,0);
+                    cursor: pointer;
+                    display: none;
+                }
+            }
+            li.completed{
+                color: rgb(141, 140, 140);
+                text-decoration: line-through;
+            }
+            li:hover{
+                background-color: rgba(255,255,255,.4);
+                box-shadow: 0px 1px 4px rgba(107, 46, 82, 0.2);
+                border-color: rgb(182, 26, 86);
+                transform: translateY(-2px);
+            }
+            li:hover button{
+                display: block;
+            }
+        }
+        div.bottom {
+            width: 600px;
+            height: 40px;
+            background: rgba(235, 235, 235,.7);
+            border-radius: 0 0 10px 10px;
+            line-height: 40px;
+            font-size: 14px;
+            margin-top: 8px;
+            div.left {
+                float: left;
+                margin-left: 10px;
+                .checkall{
+                    display: inline-block;
+                    float: left;
+                    margin: 12px 5px 0 0;
+                    width: 14px;
+                    height: 14px;
+                    border: 1px solid #333;
+                    border-radius: 50%;
+                    position: relative;
+                }
+                .checkall:before{
+                    content:'';
+                    width: 10px;
+                    height: 10px;
+                    background: rgb(190, 92, 92);
+                    border-radius: 50%;
+                    position: relative;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%,-50%);
+                    display: none;
+                    // display: block;
+                }
+                .checkall.active:before{
+                    display: block;
+                }
+                #all-btn {
+                    float: left;
+                    cursor: pointer;
+                }
+            }
+          
+            div.middle {
+                margin-left: 150px;
+              #all-btn {
+                float: left;
+                box-sizing: border-box;
+                padding: 0 10px;
+                cursor: pointer;
+              }
+              #active-btn {
+                float: left;
+                box-sizing: border-box;
+                padding: 0 10px;
+                margin-left: 10px;
+                cursor: pointer;
+              }
+              #complete-btn {
+                float: left;
+                box-sizing: border-box;
+                padding: 0 10px;
+                margin-left: 10px;
+                cursor: pointer;
+              }
+              .active{
+                color: rgb(182, 26, 86);
+                background: rgba(243, 69, 135, 0.05);
+                box-sizing: border-box;
+                border: 1px solid rgb(182, 26, 86);
+                border-width: 2px 0 0 0;
+              }
+            }
+          
+            div.right {
+                float: right;
+                margin-right: 10px;
+                color: rgb(182, 26, 86);
+                cursor: pointer;
+                div{
+                    float: right;
+                    margin: 0 10px;
+                }
+            //   #clear-btn:hover {
+            //     transform: scale(1.2)
+            //   }
+            }
+          }
+    }
+  }

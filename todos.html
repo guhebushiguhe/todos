@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="todos.css">
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <div id="todo-title">TODOS</div>
+            <div class="taskBox">
+                <input type="text" v-model="taskStr" @keyup.13="addLi" id="task" placeholder="请输入待办事项">
+                <button @click.stop="addLi" id="addBtn">添加</button>
+            </div>
+        </header>
+        <div class="todo">
+            <ul id="todo-body">
+                <!-- todo数据组件 -->
+                <todoli v-for="(item,index) in liArr"
+                 :content="item.content"
+                 :completed="item.completed"
+                 :selected="item.selected" :index="index"
+                 :id="item.id" :show="item.show"
+                 :edit="item.edit"
+                 @init="init">
+                </todoli>
+            </ul>
+            <div class="bottom">
+                <div class="left">
+                    <div :class="['checkall',{'active':allSelected}]" @click.stop="selectAll"></div>
+                    <div id="all-btn" @click.stop="selectAll">全选</div>
+                </div>
+                <div class="middle">
+                    <div id="all-btn" :class="{'active':activeTab=='all'}" @click="changTabs('all')">全部 {{sumAll}}</div>
+                    <div id="active-btn" :class="{'active':activeTab=='unfinished'}" @click="changTabs('unfinished')">待办
+                        {{sumUnfinishedAll}}</div>
+                    <div id="complete-btn" :class="{'active':activeTab=='completed'}" @click="changTabs('completed')">已完成
+                        {{sumCompletedAll}}</div>
+                </div>
+                <div class="right">
+                    <div id="clear-btn" :class="{'hidden':sumSelected==0}" @click.stop="clearCompleted">删除 {{sumSelected}}
+                    </div>
+                    <div id="move-t0-completed" v-show="allSelectedCompleted" @click.stop="moveTask('move')">添加到已完成 {{sumSelected}}</div>
+                    <div id="move-to-unfinished" v-show="allSelectedUnfinished" @click.stop="moveTask('move')">添加到待办 {{sumSelected}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="./vue.js"></script>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            liArr: [],
+            taskStr: '',
+            allSelected: false,
+            allSelectedUnfinished: false,
+            allSelectedCompleted: false,
+            sumAll: 0,
+            sumUnfinishedAll: 0,
+            sumCompletedAll: 0,
+            sumSelected: 0,
+            sumCompleted: 0,
+            sumUnfinished: 0,
+            sumShow: 0,
+            activeTab: 'all'
+        },
+        // 挂载完毕渲染一次统计数据
+        mounted() {
+            this.init()
+            this.checkView()
+            this.setTabs()
+        },
+        // 数据有更新时渲染页面所有统计数据
+        updated() {
+            this.checkView()
+        },
+        methods: {
+            // 数据初始化
+            init: function () {
+                console.log('init开始')
+                // 清空测试用数据
+                this.liArr = []
+                // 遍历localStorage
+                for (var i = 0; i < localStorage.length; i++) {
+                    // 寻找 todos 开头的key
+                    // 遍历并加入liArr
+                    key = localStorage.key(i)
+                    if (/^(todos)/.test(key)) {
+                        this.liArr.push(JSON.parse(localStorage.getItem(key)))
+                    }
+                }
+                console.log('init结束')
+            },
+            // 检查更新显示内容
+            checkView: function () {
+                console.log("checkView")
+                this.sumSelected = this.liArr.filter(item => item.selected).length
+                this.sumCompleted = this.liArr.filter(item => item.selected).filter(item => item.completed).length
+                this.sumUnfinished = this.liArr.filter(item => item.selected).filter(item => item.unfinished).length
+                this.sumShow = this.liArr.filter(item => item.show).length
+                // 全选框自动勾选
+                if (this.sumSelected == this.sumShow) {
+                    this.allSelected = true
+                }else{
+                    this.allSelected = false
+                }
+                // 检查移动内容按钮自动显示
+                if (this.sumSelected != 0) {
+                    if (this.sumSelected == this.sumCompleted) {
+                        // 选中的内容都是已完成,显示添加到待办
+                        this.allSelectedUnfinished = true
+                        this.allSelectedCompleted = false
+                    } else if (this.sumCompleted == this.sumUnfinished) {
+                        // 选中的内容都是待办,显示添加到已完成
+                        this.allSelectedUnfinished = false
+                        this.allSelectedCompleted = true
+                    } else {
+                        // 选中的内容有待办有已完成
+                        this.allSelectedUnfinished = false
+                        this.allSelectedCompleted = false
+                    }
+                } else {
+                    // 未选择
+                    this.allSelectedUnfinished = false
+                    this.allSelectedCompleted = false
+                }
+                // 显示总数,待办数和已完成数
+                this.sumAll = this.liArr.length
+                this.sumUnfinishedAll = this.liArr.filter(i => i.completed == false).length
+                this.sumCompletedAll = this.liArr.filter(i => i.completed == true).length
+                this.sumSelected = this.liArr.filter(i => i.selected == true).length
+            },
+            // 添加记录
+            addLi: function () {
+                let taskJson = { id: Date.now(), content: this.taskStr, completed: false, selected: false, show: true, edit: false }
+                if (this.taskStr != '') {
+                    // 判断是否输入框为空，空则不执行
+                    this.liArr.push(taskJson)
+                    localStorage.setItem("todos" + taskJson.id, JSON.stringify(taskJson))
+                    this.taskStr = ''
+                }
+            },
+            // 全选按钮
+            selectAll: function () {
+                // 不同分页下全选的内容不一样
+                if (this.allSelected == false) {
+                    this.liArr.forEach((i) => {
+                        if(i.show == true){
+                            i.selected = true
+                        }
+                        })
+                } else {
+                    this.liArr.forEach((i) => {
+                        if(i.show == true){
+                            i.selected = false
+                        }
+                        })
+                }
+
+
+            },
+            // 类型的移动
+            moveTask() {
+                this.sumSelected = this.liArr.filter(item => item.selected).length
+                this.sumCompleted = this.liArr.filter(item => item.selected).filter(item => item.completed).length
+                this.sumUnfinished = this.liArr.filter(item => item.selected).filter(item => item.unfinished).length
+                if (this.sumSelected != 0) {
+                    // 如果有选择
+                    // 移动模式
+                    console.log('moveTask移动模式')
+                    if (this.allSelectedCompleted == true) {
+                        // 移动到待办
+                        console.log('移动到待办')
+                        this.liArr.filter(item => item.selected).forEach((i) => { i.completed = true })
+                        this.liArr.filter(item => item.selected).forEach((i) => { 
+                            i.selected = false
+                            localStorage.setItem("todos" + i.id, JSON.stringify(i))
+                         })
+
+                    } else if (this.allSelectedUnfinished == true) {
+                        // 移动到已完成
+                        console.log('移动到已完成')
+                        this.liArr.filter(item => item.selected).forEach((i) => { i.completed = false })
+                        this.liArr.filter(item => item.selected).forEach((i) => { 
+                            i.selected = false
+                            localStorage.setItem("todos" + i.id, JSON.stringify(i))
+                         })
+                    }
+                    this.$nextTick(function(){
+                        this.init()
+                        this.liArr.forEach(i=>{
+                            i.selected = false
+                            this.allSelected = false
+                        })
+                        this.setTabs()
+                    })
+                } else {
+                    this.allSelectedUnfinished = false
+                    this.allSelectedCompleted = false
+                }
+            },
+            // 删除多项
+            clearCompleted: function () {
+                // 删除对应localStorage
+                this.liArr.filter((i) => { return i.selected == true })
+                    .forEach(item => {
+                        localStorage.removeItem("todos" + item.id)
+                    })
+                // 删除对应liArr
+                this.liArr = this.liArr.filter((i) => { return i.selected == false })
+            },
+            // 切换显示分类
+            changTabs: function (t) {
+                this.activeTab = t
+                this.liArr.forEach(i=>{
+                    i.selected = false
+                    this.allSelected = false
+                })
+                this.setTabs()
+            },
+            setTabs: function () {
+                if (this.activeTab == 'all') {
+                    // 切换显示全部
+                    this.liArr.forEach(i => i.show = true)
+                } else if (this.activeTab == 'unfinished') {
+                    // 切换显示待办
+                    this.liArr.forEach(i => {
+                        if (i.completed == true) {
+                            i.show = false
+                        } else {
+                            i.show = true
+                        }
+                    })
+                } else if (this.activeTab == 'completed') {
+                    // 切换显示已完成
+                    this.liArr.forEach(i => {
+                        if (i.completed == true) {
+                            i.show = true
+                        } else {
+                            i.show = false
+                        }
+                    })
+                }
+            }
+        },
+        components: {
+            'todoli': {
+                props: ["content", "completed", "index", "selected", "id", "show", "edit"],
+                methods: {
+                    // 删除任务
+                    delLi: function () {
+                        // 删除单条localStorage数据
+                        localStorage.removeItem("todos" + vm.liArr[this.index].id)
+                        // 删除单挑liArr数据
+                        vm.liArr.splice(this.index, 1)
+                    },
+                    // 多选框
+                    select: function (index) {
+                        if (!vm.liArr[index].selected) {
+                            vm.liArr[index].selected = true
+                        } else {
+                            vm.liArr[index].selected = false
+                        }
+                    },
+                    // 进入编辑
+                    editTask: function (e) {
+                        console.log("编辑中")
+                        vm.liArr[this.index].edit = true
+                        // 等待input显示切换完毕，再设置焦点
+                        this.$nextTick(function() {
+                            e.target.nextElementSibling.focus()
+                        })
+                    },
+                    // 退出编辑状态
+                    endEditTask: function () {
+                        console.log("退出编辑状态")
+                        // 修改localStorage数据
+                        let taskJson = { id: this.id, content: this.content, completed: this.completed, selected: false, show: this.show, edit: false }
+                        localStorage.setItem('todos' + this.id, JSON.stringify(taskJson))
+                        console.log("初始化之前")
+                        vm.init()
+                        console.log("初始化之后")
+                    }
+                },
+                template: `
+                        <li :index="index" :class="{completed:completed}" v-show="show">
+                            <div :class="['check',{'show':selected}]" @click.stop="select(index)"></div>
+                            <span :class="{'hidden':edit}" @click.stop="select(index)" @dblclick.stop="editTask">{{ content }}</span>
+                            <input type="text" :class="{'active':edit}" v-model=content @keyup.13="endEditTask" @blur="endEditTask"></input>
+                            <button :index="index" @click="delLi($event)">×</button>
+                        </li>
+                    `
+            },
+        },
+    })
+</script>
+</html>

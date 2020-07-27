@@ -1,0 +1,264 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+ul {
+  list-style: none;
+}
+html {
+  overflow: hidden;
+}
+body {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-image: linear-gradient(180deg, #f5ede1, #d6b3c3);
+}
+.hidden {
+  display: none;
+}
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar {
+  width: 4px;
+  /*滚动条宽度*/
+  height: 16px;
+  /*滚动条高度*/
+}
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  /*滚动条的背景区域的圆角*/
+  background-color: rgba(235, 235, 235, 0 \.5);
+  /*滚动条的背景颜色*/
+}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  /*滚动条的圆角*/
+  background-color: #d3a3b5;
+  /*滚动条的背景颜色*/
+}
+#app {
+  width: 600px;
+  height: 400px;
+  margin: 40px auto;
+  color: #333;
+  font-weight: 100;
+}
+#app header #todo-title {
+  width: 220px;
+  margin: 0 auto;
+  font-size: 60px;
+  color: #b61a56;
+}
+#app header .taskBox {
+  height: 42px;
+}
+#app header .taskBox #task {
+  display: block;
+  float: left;
+  width: 485px;
+  height: 40px;
+  outline: none;
+  border-radius: 10px;
+  border: 1px solid #b61a56;
+  text-indent: 1em;
+}
+#app header .taskBox #addBtn {
+  float: left;
+  margin-left: 12px;
+  width: 100px;
+  height: 40px;
+  font-size: 18px;
+  font-weight: 100;
+  border-radius: 10px;
+  border: 1px solid #b61a56;
+  color: #b61a56;
+  cursor: pointer;
+  outline: none;
+  background-color: #ffffff;
+  transition: color 0.1s, background-color 0.1s;
+}
+#app header .taskBox #addBtn:hover {
+  color: #fff;
+  background: #b61a56;
+}
+#app .todo {
+  border-radius: 10px;
+  box-shadow: 10px 20px 60px rgba(1, 1, 1, 0.2), 1px 5px 10px rgba(221, 166, 166, 0.5);
+}
+#app .todo ul {
+  width: 580px;
+  height: auto;
+  min-height: 240px;
+  max-height: 500px;
+  overflow-x: hidden;
+  font-size: 20px;
+  border-radius: 10px 10px 0 0;
+  padding: 0 10px;
+  margin-top: 10px;
+  margin-bottom: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  position: relative;
+}
+#app .todo ul li {
+  border: 1px solid #b3b2b2;
+  border-width: 0 0 1px 0;
+  margin: 10px 0 5px 0;
+  width: 575px;
+  height: 38px;
+  line-height: 38px;
+  position: relative;
+  box-sizing: border-box;
+  padding: 0 10px;
+  border-radius: 6px;
+  box-shadow: 0px 1px 4px rgba(107, 46, 82, 0);
+  transform: translateY(0px);
+  background-color: rgba(255, 255, 255, 0);
+  transition: border-color 0.1s, border-shadow 0.1s, transform 0.1s, background-color 0.1s;
+}
+#app .todo ul li .check {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #333;
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+}
+#app .todo ul li .check:before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: #be5c5c;
+  border-radius: 50%;
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+#app .todo ul li .check.show:before {
+  display: block;
+}
+#app .todo ul li input {
+  width: 300px;
+  height: 30px;
+  font-size: 18px;
+  color: #333;
+  text-indent: 0.5em;
+  border: 1px solid #b61a56;
+  border-radius: 10px;
+  outline: none;
+  display: none;
+}
+#app .todo ul li input.active {
+  display: inline-block;
+}
+#app .todo ul li button {
+  float: right;
+  font-size: 20px;
+  width: 40px;
+  height: 30px;
+  border-width: 0px;
+  margin-top: 4px;
+  color: #b61a56;
+  background: rgba(1, 1, 1, 0);
+  cursor: pointer;
+  display: none;
+}
+#app .todo ul li.completed {
+  color: #8d8c8c;
+  text-decoration: line-through;
+}
+#app .todo ul li:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0px 1px 4px rgba(107, 46, 82, 0.2);
+  border-color: #b61a56;
+  transform: translateY(-2px);
+}
+#app .todo ul li:hover button {
+  display: block;
+}
+#app .todo div.bottom {
+  width: 600px;
+  height: 40px;
+  background: rgba(235, 235, 235, 0.7);
+  border-radius: 0 0 10px 10px;
+  line-height: 40px;
+  font-size: 14px;
+  margin-top: 8px;
+}
+#app .todo div.bottom div.left {
+  float: left;
+  margin-left: 10px;
+}
+#app .todo div.bottom div.left .checkall {
+  display: inline-block;
+  float: left;
+  margin: 12px 5px 0 0;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #333;
+  border-radius: 50%;
+  position: relative;
+}
+#app .todo div.bottom div.left .checkall:before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: #be5c5c;
+  border-radius: 50%;
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+#app .todo div.bottom div.left .checkall.active:before {
+  display: block;
+}
+#app .todo div.bottom div.left #all-btn {
+  float: left;
+  cursor: pointer;
+}
+#app .todo div.bottom div.middle {
+  margin-left: 150px;
+}
+#app .todo div.bottom div.middle #all-btn {
+  float: left;
+  box-sizing: border-box;
+  padding: 0 10px;
+  cursor: pointer;
+}
+#app .todo div.bottom div.middle #active-btn {
+  float: left;
+  box-sizing: border-box;
+  padding: 0 10px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+#app .todo div.bottom div.middle #complete-btn {
+  float: left;
+  box-sizing: border-box;
+  padding: 0 10px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+#app .todo div.bottom div.middle .active {
+  color: #b61a56;
+  background: rgba(243, 69, 135, 0.05);
+  box-sizing: border-box;
+  border: 1px solid #b61a56;
+  border-width: 2px 0 0 0;
+}
+#app .todo div.bottom div.right {
+  float: right;
+  margin-right: 10px;
+  color: #b61a56;
+  cursor: pointer;
+}
+#app .todo div.bottom div.right div {
+  float: right;
+  margin: 0 10px;
+}
