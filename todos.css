@@ -17,6 +17,12 @@ body {
 .hidden {
   display: none;
 }
+.todoli-enter-active {
+  animation: fadeInRight 0.4s;
+}
+.todoli-leave-active {
+  animation: fadeOutRight 0.4s;
+}
 /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
 ::-webkit-scrollbar {
   width: 4px;

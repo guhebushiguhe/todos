@@ -19,6 +19,13 @@ body{
     display: none;
 }
 
+.todoli-enter-active{
+    animation: fadeInRight .4s;
+}
+.todoli-leave-active{
+    animation: fadeOutRight .4s;
+}
+
 /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/  
 ::-webkit-scrollbar  
 {  
@@ -108,7 +115,7 @@ body{
             margin-top: 10px;
             margin-bottom: 3px;
             background: rgba(255,255,255,.3);
-            position: relative;;
+            position: relative;
             li{
                 // background: rgb(216, 216, 216);
                 border: 1px solid rgb(179, 178, 178);

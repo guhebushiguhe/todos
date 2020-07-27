@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="animate.css">
     <link rel="stylesheet" href="todos.css">
 </head>
 
@@ -20,14 +21,17 @@
         <div class="todo">
             <ul id="todo-body">
                 <!-- todo数据组件 -->
-                <todoli v-for="(item,index) in liArr"
-                 :content="item.content"
-                 :completed="item.completed"
-                 :selected="item.selected" :index="index"
-                 :id="item.id" :show="item.show"
-                 :edit="item.edit"
-                 @init="init">
-                </todoli>
+                <transition-group name="todoli" tag="p" mode="in-out">
+                    <todoli v-for="(item,index) in liArr"
+                        :content="item.content"
+                        :completed="item.completed"
+                        :selected="item.selected" :index="index"
+                        :id="item.id" :show="item.show"
+                        :edit="item.edit"
+                        @init="init"
+                        :key="index">
+                    </todoli>
+                </transition>
             </ul>
             <div class="bottom">
                 <div class="left">
@@ -79,7 +83,9 @@
         },
         // 数据有更新时渲染页面所有统计数据
         updated() {
-            this.checkView()
+            // setTimeout(function(){
+                vm.checkView()
+            // },1000)
         },
         methods: {
             // 数据初始化
@@ -290,7 +296,7 @@
                     }
                 },
                 template: `
-                        <li :index="index" :class="{completed:completed}" v-show="show">
+                        <li :key="index" :index="index" :class="{completed:completed}" v-show="show">
                             <div :class="['check',{'show':selected}]" @click.stop="select(index)"></div>
                             <span :class="{'hidden':edit}" @click.stop="select(index)" @dblclick.stop="editTask">{{ content }}</span>
                             <input type="text" :class="{'active':edit}" v-model=content @keyup.13="endEditTask" @blur="endEditTask"></input>
